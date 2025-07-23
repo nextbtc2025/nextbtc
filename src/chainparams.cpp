@@ -81,7 +81,6 @@ public:
 
         vSeeds.clear();
         vFixedSeeds.clear();
-        vFixedSeeds.emplace_back("122.51.252.52");
 
         pchMessageStart[0] = 0xda;
         pchMessageStart[1] = 0x9e;

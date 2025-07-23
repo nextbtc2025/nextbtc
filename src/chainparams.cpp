@@ -59,7 +59,7 @@ public:
         consensus.CSVHeight = 1;   
         consensus.SegwitHeight = 0; 
 
-        consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); 
+        consensus.powLimit = uint256("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); 
         consensus.nPowTargetTimespan = 3 * 60 * 60; 
         consensus.nPowTargetSpacing = 5 * 60; 
         consensus.fPowAllowMinDifficultyBlocks = true; 

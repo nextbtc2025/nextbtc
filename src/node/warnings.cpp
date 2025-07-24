@@ -20,12 +20,12 @@ namespace node {
 Warnings::Warnings()
 {
     // Pre-release build warning
-    /*  <-- 在这里加上斜杠和星号
+    /*  
     if (!CLIENT_VERSION_IS_RELEASE) {
         m_warnings.insert(
             {Warning::PRE_RELEASE_TEST_BUILD,
              _("This is a pre-release test build - use at your own risk - do not use for mining or merchant applications")});
-    */  // <-- 在这里加上星号和斜杠
+    */  // 
     }
 }
 bool Warnings::Set(warning_type id, bilingual_str message)

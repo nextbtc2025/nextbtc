@@ -2,7 +2,6 @@
 // Copyright (c) 2009-2022 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #include <chainparams.h>
 
 #include <chainparamsbase.h>
@@ -20,19 +19,22 @@
 
 #include <cassert>
 #include <cstdint>
+
 #include <limits>
 #include <stdexcept>
 #include <vector>
 
+//#include <arith_uint256.h>
 
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "From values, perception is born. From perception, judgment arises. From judgment, choice is made. From choice, destiny unfolds.";
+    const char* pszTimestamp = "I COME,I SEE,I HODL. by @btcdage";
     CMutableTransaction txNew;
     txNew.version = 1;
     txNew.vin.resize(1);
     txNew.vout.resize(1);
-    txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    //txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    txNew.vin[0].scriptSig = CScript() << CScriptNum(0) << std::vector<unsigned char>(pszTimestamp, pszTimestamp + strlen(pszTimestamp));
     txNew.vout[0].nValue = genesisReward;
     txNew.vout[0].scriptPubKey = CScript();
 
@@ -73,15 +75,15 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].min_activation_height = 0;
 
-        genesis = CreateGenesisBlock(1368374520, 58748, 0x1f00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1368374520, 62980, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256("00004246af7d989fc9cc856fe356faefeada850e78022cbf69e1fef905137cca"));
-        assert(genesis.hashMerkleRoot == uint256("87cefb6a57ff85e998e3d61c47cec8f2c7f9c9576cce1ca4b64eec4a40cc5dc4"));
-
+        assert(consensus.hashGenesisBlock == uint256("0000b64ca9d334e6d745141102fd101fd872f7c47c24395d38451a55dea83c62"));
+        assert(genesis.hashMerkleRoot == uint256("62f8061412d36ce62f8cfb09099bd602c459b2cf47f114d3c1a4abae79abd77e"));
+                
         vSeeds.clear();
         vFixedSeeds.clear();
-
+ 
         pchMessageStart[0] = 0xda;
         pchMessageStart[1] = 0x9e;
         pchMessageStart[2] = 0xb5;
@@ -119,9 +121,10 @@ std::unique_ptr<const CChainParams> CreateChainParams(const ArgsManager& args, c
 {
     if (chain == ChainType::MAIN) {
         return std::make_unique<const CMainParams>();
+    } else {
+        // 对于 testnet, regtest, signet 等，都返回一个 CMainParams 实例
+        return std::make_unique<const CMainParams>();
     }
-
-    throw std::runtime_error(strprintf("%s: Unknown chain %s.", __func__, ChainTypeToString(chain)));
 }
 
 void SelectParams(const ChainType chain)

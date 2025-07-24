@@ -73,11 +73,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].min_activation_height = 0;
 
-        genesis = CreateGenesisBlock(1368374520, 31789, 0x1f00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1368374520, 58748, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256("0000ac4cf305a3c4add5167ed3d926ab4074fb129b05f848fb902fec16012405"));
-        assert(genesis.hashMerkleRoot == uint256("3a5b7fb5aba81bb4ee6e54cd8fbeacf9912ae8c5d80aa746a4c2d0cebe0a3a96"));
+        assert(consensus.hashGenesisBlock == uint256("00004246af7d989fc9cc856fe356faefeada850e78022cbf69e1fef905137cca"));
+        assert(genesis.hashMerkleRoot == uint256("87cefb6a57ff85e998e3d61c47cec8f2c7f9c9576cce1ca4b64eec4a40cc5dc4"));
 
         vSeeds.clear();
         vFixedSeeds.clear();

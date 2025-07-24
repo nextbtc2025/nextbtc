@@ -24,8 +24,6 @@
 #include <stdexcept>
 #include <vector>
 
-//#include <arith_uint256.h>
-
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     const char* pszTimestamp = "I COME,I SEE,I HODL. by @btcdage";
@@ -33,7 +31,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     txNew.version = 1;
     txNew.vin.resize(1);
     txNew.vout.resize(1);
-    //txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+
     txNew.vin[0].scriptSig = CScript() << CScriptNum(0) << std::vector<unsigned char>(pszTimestamp, pszTimestamp + strlen(pszTimestamp));
     txNew.vout[0].nValue = genesisReward;
     txNew.vout[0].scriptPubKey = CScript();

@@ -78,7 +78,7 @@
 
 如果您觉得这个项目对您有帮助，或者您希望支持我继续开发和维护，可以考虑请我喝杯咖啡。您的支持是我最大的动力！
 
-*   **BTC**: `bc1ql4x28l8cjajq65w0ptytzhn0k5qd25t980c037`
+*   **BTC**: `bc1qy6ak4243fc0vd3d9hpsed8x3m9q62jpk3vxmlh`
 
 非常感谢您的支持！
 让我们一起回到原点，重新体验区块链的创世魅力！
@@ -167,7 +167,7 @@ This is a community-driven project, and we welcome contributions of all forms!
 
 If you find this project helpful or wish to support my continued development and maintenance, please consider buying me a coffee. Your support is greatly appreciated and keeps me motivated!
 
-*   **BTC**: `bc1ql4x28l8cjajq65w0ptytzhn0k5qd25t980c037`
+*   **BTC**: `bc1qy6ak4243fc0vd3d9hpsed8x3m9q62jpk3vxmlh`
 
 Thank you for your support!
 

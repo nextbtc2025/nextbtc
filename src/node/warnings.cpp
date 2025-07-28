@@ -19,13 +19,7 @@
 namespace node {
 Warnings::Warnings()
 {
-    // Pre-release build warning
-    /*  
-    if (!CLIENT_VERSION_IS_RELEASE) {
-        m_warnings.insert(
-            {Warning::PRE_RELEASE_TEST_BUILD,
-             _("This is a pre-release test build - use at your own risk - do not use for mining or merchant applications")});
-    */ 
+
 }
 bool Warnings::Set(warning_type id, bilingual_str message)
 {

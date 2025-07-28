@@ -78,7 +78,15 @@ public:
 
         assert(consensus.hashGenesisBlock == uint256("0000b64ca9d334e6d745141102fd101fd872f7c47c24395d38451a55dea83c62"));
         assert(genesis.hashMerkleRoot == uint256("62f8061412d36ce62f8cfb09099bd602c459b2cf47f114d3c1a4abae79abd77e"));
-                
+
+        // <<<<<<<<<<<<<<<< 在这里开始添加 <<<<<<<<<<<<<<<<
+        checkpointData = CChainParams::CheckpointData{
+            {
+                { 22222, uint256("0000020e6b8c1cb86af7abb5ad701a7801fa282286129605b9ff4774814aaac0")},
+            }
+        };
+        // <<<<<<<<<<<<<<<< 在这里结束添加 <<<<<<<<<<<<<<<<     
+
         vSeeds.clear();
         vFixedSeeds.clear();
  

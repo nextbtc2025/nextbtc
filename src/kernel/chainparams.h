@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <iterator>
+#include <map> // <---- 在这里添加这一行
 #include <memory>
 #include <optional>
 #include <string>
@@ -117,6 +118,13 @@ public:
     }
 
     const ChainTxData& TxData() const { return chainTxData; }
+    /**
+     * Checkpoints are hard-coded blockchain states that must be matched by
+     * any syncing node.
+     */
+    struct CheckpointData {
+        std::map<int, uint256> mapCheckpoints;
+    };
 
     /**
      * SigNetOptions holds configurations for creating a signet CChainParams.
@@ -170,6 +178,7 @@ protected:
     bool m_is_mockable_chain;
     std::vector<AssumeutxoData> m_assumeutxo_data;
     ChainTxData chainTxData;
+    CheckpointData checkpointData;
 };
 
 std::optional<ChainType> GetNetworkForMagic(const MessageStartChars& pchMessageStart);

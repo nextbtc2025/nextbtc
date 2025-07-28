@@ -1,0 +1,12 @@
+{
+    "name": "Bitcoin Core Builder (Ubuntu 22.04)",
+    // 告诉 Codespaces 使用标准的 Ubuntu 22.04 镜像作为基础
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+
+    "features": {
+        // 可以添加一些预装功能，但我们用下面的命令来精确控制
+    },
+
+    // 关键部分：在环境创建好之后，自动运行这些命令来安装所有编译依赖
+    "onCreateCommand": "sudo apt-get update && sudo apt-get install -y build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 git libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libdb-dev libdb++-dev libminiupnpc-dev libzmq3-dev"
+}

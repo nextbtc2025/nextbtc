@@ -34,7 +34,7 @@
 ## 🏁 如何开始
 
 1.  **下载预编译钱包**
-    访问本项目的 [Releases 页面](https://github.com/Btcdage2013/nextBTC/releases) 下载最新的预编译钱包程序。
+    访问本项目的 [Releases 页面](https://github.com/nextbtc2025/nextbtc/releases) 下载最新的预编译钱包程序。
 
 2.  **阅读教程**
     我们强烈建议您阅读详细的图文教程，它将指导您完成所有必要设置。
@@ -45,8 +45,8 @@
     *   将以下配置内容复制到文件中：
       ```conf
       server=1
-      rpcuser=btcdage
-      rpcpassword=btcdage
+      rpcuser=nextbtc
+      rpcpassword=nextbtc
       rpcbind=127.0.0.1
       rpcallowip=127.0.0.1
       rpcport=8554
@@ -57,7 +57,7 @@
 
 | 参数 | 值 |
 | :--- | :--- |
-| **创世区块信息** | `"I COME,I SEE,I HODL. by @btcdage"` |
+| **创世区块信息** | `"I COME,I SEE,I HODL."` |
 | **算法** | SHA256d |
 | **平均出块时间** | 2.5 分钟 |
 | **初始区块奖励** | 3.125 nextBTC |
@@ -123,7 +123,7 @@ Here, you can experience the unique charm of mining, transfers, and the UTXO mod
 ## 🏁 Getting Started
 
 1.  **Download Pre-compiled Wallet**
-    Visit the project's [Releases Page](https://github.com/Btcdage2013/nextBTC/releases) to download the latest pre-compiled wallet application.
+    Visit the project's [Releases Page](https://github.com/nextbtc2025/nextbtc/releases) to download the latest pre-compiled wallet application.
 
 2.  **Read the Tutorial**
     We highly recommend reading the detailed tutorial, which will guide you through all the necessary setup steps.
@@ -134,8 +134,8 @@ Here, you can experience the unique charm of mining, transfers, and the UTXO mod
     *   Copy the following configuration into the file:
       ```conf
       server=1
-      rpcuser=btcdage
-      rpcpassword=btcdage
+      rpcuser=nextbtc
+      rpcpassword=nextbtc
       rpcbind=127.0.0.1
       rpcallowip=127.0.0.1
       rpcport=8554
@@ -146,7 +146,7 @@ Here, you can experience the unique charm of mining, transfers, and the UTXO mod
 
 | Parameter | Value |
 | :--- | :--- |
-| **Genesis Block Message**| `"I COME,I SEE,I HODL. by @btcdage"` |
+| **Genesis Block Message**| `"I COME,I SEE,I HODL."` |
 | **Algorithm** | SHA256d |
 | **Average Block Time** | 2.5 Minutes |
 | **Initial Block Reward** | 3.125 nextBTC |

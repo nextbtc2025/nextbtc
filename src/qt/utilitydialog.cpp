@@ -43,9 +43,9 @@ if (about)
     QString versionText = QString{CLIENT_NAME} + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
     QString myCustomAboutText = QString::fromUtf8(
         "<h3>重要声明与免责条款</h3>"
-        "<p><b>注意！</b>本软件不是原版 Bitcoin Core, 而是根据其源码修改的 <b>nextBTC</b>。"
+        "<p><b>注意！</b>本软件不是原版 Bitcoin Core, 而是根据其源码修改的 <b>nextBTC</b> v1.0.2。"
         "这是一个为教育和技术探索目的而创建的开源实验项目。</p>"
-        "<p><b>项目地址:</b> <a href=\"https://github.com/btcdage2013/bitcoin\">https://github.com/btcdage2013/bitcoin</a></p>"
+        "<p><b>项目地址:</b> <a href=\"https://github.com/nextbtc2025/nextbtc\">https://github.com/nextbtc2025/nextbtc</a></p>"
         "<p>其代币是项目内部的实验性产物，不具备任何现实世界的经济价值。"
         "我们强烈建议并要求用户不得将其用于任何形式的金融交易、投资、销售或欺诈活动。</p>"
         "<hr>" // 分割线

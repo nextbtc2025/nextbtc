@@ -154,7 +154,7 @@ Here, you can experience the unique charm of mining, transfers, and the UTXO mod
 | **Total Supply** | 5,000,000 nextBTC |
 | **Address Format** | Bech32 (bc1...), Base58 |
 | **RPC Port** | 8554 |
-| **P2P Port** | 8555 |
+| **P2P Port** | 8666 |
 
 ## 🤝 How to Contribute
 

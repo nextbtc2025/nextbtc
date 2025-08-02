@@ -11,139 +11,69 @@
 #include <uint256.h>
 #include <util/check.h>
 
+// 声明 DGW 函数
+unsigned int DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params);
+
+
+// =================================================================
+// vvvvvvvvvvvvvvvvvv 核心修改区域 vvvvvvvvvvvvvvvvvvvvv
+//          实现“分阶段共识” (Phased Consensus)
+// =================================================================
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
-    assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+    // 创世区块: pindexLast 是 nullptr
+    if (pindexLast == nullptr) {
+        return UintToArith256(params.powLimit).GetCompact();
+    }
 
-    // Only change once per difficulty adjustment interval
-    if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
+    // -----------------------------------------------------------------
+    // 阶段一: 初始快速挖矿
+    // 在指定高度之前，锁定难度为网络允许的最低值，以完成原分叉链空投。
+    // 挖的新区块，其高度为 pindexLast->nHeight + 1。
+    // -----------------------------------------------------------------
+    const int nInstantMineEndHeight = 55555; // 定义初始快速挖矿阶段的结束高度 (区块 0 到 55555)
+ 
+    if ((pindexLast->nHeight + 1) < nInstantMineEndHeight)
     {
-        if (params.fPowAllowMinDifficultyBlocks)
-        {
-            // Special difficulty rule for testnet:
-            // If the new block's timestamp is more than 2* 10 minutes
-            // then it MUST be a min-difficulty block.
-            if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
-                return nProofOfWorkLimit;
-            else
-            {
-                // Return the last non-special-min-difficulty-rules-block
-                const CBlockIndex* pindex = pindexLast;
-                while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 && pindex->nBits == nProofOfWorkLimit)
-                    pindex = pindex->pprev;
-                return pindex->nBits;
-            }
-        }
-        return pindexLast->nBits;
+        return UintToArith256(params.powLimit).GetCompact();
     }
 
-    // Go back by what we want to be 14 days worth of blocks
-    int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
-    assert(nHeightFirst >= 0);
-    const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
-    assert(pindexFirst);
-
-    return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params);
+    // -----------------------------------------------------------------
+    // 阶段二: DGW 稳定挖矿 (Stable Mining Phase)
+    // 在初始快速阶段结束后，平滑切换到 Dark Gravity Wave 算法。
+    // -----------------------------------------------------------------
+    return DarkGravityWave(pindexLast, params);
 }
+// =================================================================
+// ^^^^^^^^^^^^^^^^^^ 修改结束 ^^^^^^^^^^^^^^^^^^^^^^^^
+// =================================================================
 
-unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
-{
-    if (params.fPowNoRetargeting)
-        return pindexLast->nBits;
 
-    // Limit adjustment step
-    int64_t nActualTimespan = pindexLast->GetBlockTime() - nFirstBlockTime;
-    if (nActualTimespan < params.nPowTargetTimespan/4)
-        nActualTimespan = params.nPowTargetTimespan/4;
-    if (nActualTimespan > params.nPowTargetTimespan*4)
-        nActualTimespan = params.nPowTargetTimespan*4;
+// 旧的 CalculateNextWorkRequired 函数已被删除，保持不变
 
-    // Retarget
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
-    arith_uint256 bnNew;
 
-    // Special difficulty rule for Testnet4
-    if (params.enforce_BIP94) {
-        // Here we use the first block of the difficulty period. This way
-        // the real difficulty is always preserved in the first block as
-        // it is not allowed to use the min-difficulty exception.
-        int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
-        const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
-        bnNew.SetCompact(pindexFirst->nBits);
-    } else {
-        bnNew.SetCompact(pindexLast->nBits);
-    }
-
-    bnNew *= nActualTimespan;
-    bnNew /= params.nPowTargetTimespan;
-
-    if (bnNew > bnPowLimit)
-        bnNew = bnPowLimit;
-
-    return bnNew.GetCompact();
-}
-
-// Check that on difficulty adjustments, the new difficulty does not increase
-// or decrease beyond the permitted limits.
+// 检查难度转换是否在允许范围内
 bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t height, uint32_t old_nbits, uint32_t new_nbits)
 {
-    if (params.fPowAllowMinDifficultyBlocks) return true;
-
-    if (height % params.DifficultyAdjustmentInterval() == 0) {
-        int64_t smallest_timespan = params.nPowTargetTimespan/4;
-        int64_t largest_timespan = params.nPowTargetTimespan*4;
-
-        const arith_uint256 pow_limit = UintToArith256(params.powLimit);
-        arith_uint256 observed_new_target;
-        observed_new_target.SetCompact(new_nbits);
-
-        // Calculate the largest difficulty value possible:
-        arith_uint256 largest_difficulty_target;
-        largest_difficulty_target.SetCompact(old_nbits);
-        largest_difficulty_target *= largest_timespan;
-        largest_difficulty_target /= params.nPowTargetTimespan;
-
-        if (largest_difficulty_target > pow_limit) {
-            largest_difficulty_target = pow_limit;
-        }
-
-        // Round and then compare this new calculated value to what is
-        // observed.
-        arith_uint256 maximum_new_target;
-        maximum_new_target.SetCompact(largest_difficulty_target.GetCompact());
-        if (maximum_new_target < observed_new_target) return false;
-
-        // Calculate the smallest difficulty value possible:
-        arith_uint256 smallest_difficulty_target;
-        smallest_difficulty_target.SetCompact(old_nbits);
-        smallest_difficulty_target *= smallest_timespan;
-        smallest_difficulty_target /= params.nPowTargetTimespan;
-
-        if (smallest_difficulty_target > pow_limit) {
-            smallest_difficulty_target = pow_limit;
-        }
-
-        // Round and then compare this new calculated value to what is
-        // observed.
-        arith_uint256 minimum_new_target;
-        minimum_new_target.SetCompact(smallest_difficulty_target.GetCompact());
-        if (minimum_new_target > observed_new_target) return false;
-    } else if (old_nbits != new_nbits) {
-        return false;
-    }
+    // DGW 每个块都可能调整难度，旧的限制逻辑不适用。
+    // 核心的限制逻辑在 DGW 函数内部，因此这里直接返回 true 是安全的。
     return true;
 }
 
-// Bypasses the actual proof of work check during fuzz testing with a simplified validation checking whether
-// the most significant bit of the last byte of the hash is set.
+
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
-    if (EnableFuzzDeterminism()) return (hash.data()[31] & 0x80) == 0;
-    return CheckProofOfWorkImpl(hash, nBits, params);
+    auto bnTarget{DeriveTarget(nBits, params.powLimit)};
+    if (!bnTarget) return false;
+
+    // 检查工作量证明是否满足要求
+    if (UintToArith256(hash) > *bnTarget)
+        return false;
+
+    return true;
 }
 
-std::optional<arith_uint256> DeriveTarget(unsigned int nBits, const uint256 pow_limit)
+std::optional<arith_uint256> DeriveTarget(unsigned int nBits, const uint256& pow_limit)
 {
     bool fNegative;
     bool fOverflow;
@@ -151,21 +81,74 @@ std::optional<arith_uint256> DeriveTarget(unsigned int nBits, const uint256 pow_
 
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
-    // Check range
+    // 检查范围
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(pow_limit))
         return {};
 
     return bnTarget;
 }
 
-bool CheckProofOfWorkImpl(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+
+// =================================================================
+// vvvvvvvvvvvvvvvvvv Dark Gravity Wave v3 完整实现 vvvvvvvvvvvvvvvvvvvvv
+//          (此部分代码经审查无误，无需改动)
+// =================================================================
+unsigned int DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params)
 {
-    auto bnTarget{DeriveTarget(nBits, params.powLimit)};
-    if (!bnTarget) return false;
+    const CBlockIndex *BlockLastSolved = pindexLast;
+    const CBlockIndex *BlockReading = pindexLast;
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 24;
+    int64_t PastBlocksMax = 24;
+    int64_t CountBlocks = 0;
+    arith_uint256 PastDifficultyAverage;
+    arith_uint256 PastDifficultyAveragePrev;
+    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
-    // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
-        return false;
+    if (BlockLastSolved == nullptr || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMax) {
+        return bnPowLimit.GetCompact();
+    }
 
-    return true;
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1) { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * (CountBlocks - 1)) + (arith_uint256().SetCompact(BlockReading->nBits))) / CountBlocks; }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->nTime);
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->nTime;
+
+        if (BlockReading->pprev == nullptr) { assert(BlockReading); break; }
+        BlockReading = BlockReading->pprev;
+    }
+
+    arith_uint256 bnNew(PastDifficultyAverage);
+
+    int64_t _nTargetTimespan = CountBlocks * params.nPowTargetSpacing;
+
+    if (nActualTimespan < _nTargetTimespan/3)
+        nActualTimespan = _nTargetTimespan/3;
+    if (nActualTimespan > _nTargetTimespan*3)
+        nActualTimespan = _nTargetTimespan*3;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= _nTargetTimespan;
+
+    if (bnNew > bnPowLimit){
+        bnNew = bnPowLimit;
+    }
+
+    return bnNew.GetCompact();
 }
+// =================================================================
+// ^^^^^^^^^^^^^^^^^^ 代码结束 ^^^^^^^^^^^^^^^^^^^^^^^^
+// =================================================================

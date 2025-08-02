@@ -940,6 +940,7 @@ static RPCHelpMan getblocktemplate()
     result.pushKV("capabilities", std::move(aCaps));
 
     UniValue aRules(UniValue::VARR);
+    aRules.push_back("bip34");
     aRules.push_back("csv");
     if (!fPreSegWit) aRules.push_back("!segwit");
     if (consensusParams.signet_blocks) {

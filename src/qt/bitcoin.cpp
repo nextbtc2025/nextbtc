@@ -60,6 +60,9 @@
 #include <QTranslator>
 #include <QWindow>
 
+///加入
+//#include <QMessageBox>
+
 // Declare meta types used for QMetaObject::invokeMethod
 Q_DECLARE_METATYPE(bool*)
 Q_DECLARE_METATYPE(CAmount)
@@ -483,6 +486,10 @@ int GuiMain(int argc, char* argv[])
     std::tie(argc, argv) = winArgs.get();
 #endif
 
+    BitcoinApplication app;
+
+    // CHECKPOINT 1: 程序入口
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 1: GuiMain started.");
     std::unique_ptr<interfaces::Init> init = interfaces::MakeGuiInit(argc, argv);
 
     SetupEnvironment();
@@ -505,7 +512,11 @@ int GuiMain(int argc, char* argv[])
     QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 #endif
 
-    BitcoinApplication app;
+
+
+     // CHECKPOINT 2: QApplication 对象创建成功
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 2: BitcoinApplication object created.");
+
     GUIUtil::LoadFont(QStringLiteral(":/fonts/monospace"));
 
     /// 2. Parse command-line options. We do this after qt in order to show an error if there are problems parsing these
@@ -521,6 +532,9 @@ int GuiMain(int argc, char* argv[])
             QString::fromStdString("Error parsing command line arguments: %1.").arg(QString::fromStdString(error)));
         return EXIT_FAILURE;
     }
+
+    // CHECKPOINT 3: 命令行参数解析完成
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 3: Command line arguments parsed.");
 
     // Error out when loose non-argument tokens are encountered on command line
     // However, allow BIP-21 URIs only if no options follow
@@ -565,6 +579,9 @@ int GuiMain(int argc, char* argv[])
     QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
 
+    // CHECKPOINT 4: 翻译和基础设置完成
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 4: Translations and basic setup complete.");
+
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.
     if (HelpRequested(gArgs) || gArgs.GetBoolArg("-version", false)) {
@@ -589,6 +606,10 @@ int GuiMain(int argc, char* argv[])
     // - Do not call Params() before this step
     // - QSettings() will use the new application name after this, resulting in network-specific settings
     // - Needs to be done before createOptionsModel
+
+     // CHECKPOINT 5: 数据目录选择完成
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 5: Data directory selection is done.");
+   
     if (auto error = common::InitConfig(gArgs, ErrorSettingsRead)) {
         InitError(error->message, error->details);
         if (error->status == common::ConfigStatus::FAILED_WRITE) {
@@ -606,6 +627,10 @@ int GuiMain(int argc, char* argv[])
     // Parse URIs on command line
     PaymentServer::ipcParseCommandLine(argc, argv);
 #endif
+
+    // CHECKPOINT 6: 配置文件(bitcoin.conf)加载和网络参数选择完成
+    // 这是最关键的一步，SelectParams() 在 InitConfig 内部被调用
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 6: Config file loaded, network params selected.");
 
     QScopedPointer<const NetworkStyle> networkStyle(NetworkStyle::instantiate(Params().GetChainType()));
     assert(!networkStyle.isNull());
@@ -652,10 +677,16 @@ int GuiMain(int argc, char* argv[])
 
     app.createNode(*init);
 
+    // CHECKPOINT 7: 核心节点(Node)对象创建完成
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 7: Core Node object created.");
+
     // Load GUI settings from QSettings
     if (!app.createOptionsModel(gArgs.GetBoolArg("-resetguisettings", false))) {
         return EXIT_FAILURE;
     }
+
+    // CHECKPOINT 8: 选项模型(OptionsModel)创建完成
+    //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 8: OptionsModel created.");
 
     if (did_show_intro) {
         // Store intro dialog settings other than datadir (network specific)
@@ -665,11 +696,18 @@ int GuiMain(int argc, char* argv[])
     try
     {
         app.createWindow(networkStyle.data());
+
+         // CHECKPOINT 9: 主窗口(BitcoinGUI)对象创建完成
+        //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 9: Main window created.");
+       
         // Perform base initialization before spinning up initialization/shutdown thread
         // This is acceptable because this function only contains steps that are quick to execute,
         // so the GUI thread won't be held up.
         if (app.baseInitialize()) {
             app.requestInitialize();
+           // CHECKPOINT 10: 初始化请求已发送，准备进入主事件循环
+            //QMessageBox::information(nullptr, "Debug Checkpoint", "Checkpoint 10: Initialization requested, entering exec().");
+
 #if defined(Q_OS_WIN)
             WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("%1 didn't yet exit safely…").arg(CLIENT_NAME), (HWND)app.getMainWinId());
 #endif

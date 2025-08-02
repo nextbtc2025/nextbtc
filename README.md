@@ -22,7 +22,7 @@
 *   **教育目的**：是学习和理解比特币底层技术的理想沙盒。
 *   **完善的生态工具**：
     *   **项目官网**: [https://nextBTC.rf.gd](https://nextBTC.rf.gd)
-    *   **区块链浏览器**: [http://115.190.97.253:3001/](http://115.190.97.253:3001/)
+    *   **区块链浏览器**: [https://nextbtc.rf.gd/#explorer](https://nextbtc.rf.gd/#explorer) 
     *   **图文教程**: [查看零基础入门教程 (PDF)](https://nextBTC.rf.gd/pdf/nextBTC.pdf)
 
 ## ⚠️ 重要声明：教育与实验目的
@@ -111,7 +111,7 @@ Here, you can experience the unique charm of mining, transfers, and the UTXO mod
 *   **Educational Purpose**: An ideal sandbox for learning and understanding the underlying technology of Bitcoin.
 *   **Comprehensive Ecosystem Tools**:
     *   **Official Website**: [https://nextBTC.rf.gd](https://nextBTC.rf.gd)
-    *   **Block Explorer**: [http://115.190.97.253:3001/](http://115.190.97.253:3001/)
+    *   **Block Explorer**: [https://nextbtc.rf.gd/#explorer](https://nextbtc.rf.gd/#explorer) 
     *   **Tutorial**: [View Step-by-Step Tutorial for Beginners (PDF)](https://nextBTC.rf.gd/pdf/nextBTC.pdf)
 
 ## ⚠️ Important Disclaimer: Educational and Experimental Purpose

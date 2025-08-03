@@ -75,7 +75,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
 
-        // === 创世块 (已填入您找到的真实值) ===
+        // === 创世块 ===
         genesis = CreateGenesisBlock(1368374520, 147717, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256("000003167643c767d4e015a8bad0fb1054286acf23cfe3009083f9a9cd72dbc1"));
@@ -98,48 +98,23 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
         bech32_hrp = "bc";
 
-
-        // =================================================================
-        // vvvvvvvvvvvvvvvvvv 关键修正 vvvvvvvvvvvvvvvvvvvvv
-        // 恢复检查点，并为您准备好60000高度的占位符
-        // =================================================================
         checkpointData = {
             {
-                 { 55560, uint256("000002b674005782184737a1fbd21dc187a0a220266be07eb255579aefe31b18") }, // 在快进完成后，取消注释并填入55560块的哈希
+                 { 55560, uint256("000002b674005782184737a1fbd21dc187a0a220266be07eb255579aefe31b18") }, 
             }
         };
-        // =================================================================
-        // ^^^^^^^^^^^^^^^^^^ 修正结束 ^^^^^^^^^^^^^^^^^^^^^^^^
-        // =================================================================
         
         vSeeds.clear();
         vFixedSeeds.clear();
     }
 };
 
-// =================================================================
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//                   主网 (CDageMainParams) 定义结束
-// =================================================================
 
-
-
-// =================================================================
-// vvvvvvvvvvvvvvvvvv Testnet/Regtest 等参数定义 vvvvvvvvvvvvvvvvvvvvv
-// =================================================================
-
-/**
- * Testnet (v3)
- *
- * Testnet 参数类。我们不打算实际运行它，但为了让程序初始化不崩溃，
- * 我们用主网的安全参数来填充它，并只修改关键的网络标识符。
- */
 class CDageTestNetParams : public CChainParams {
 public:
     CDageTestNetParams() {
         m_chain_type = ChainType::TESTNET;
         
-        // === 从 CDageMainParams 完整复制过来的安全参数 ===
         consensus.nSubsidyHalvingInterval = 800000;
         consensus.BIP34Height = 1;
         consensus.BIP65Height = 1;
@@ -151,19 +126,19 @@ public:
         consensus.powLimit = uint256("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetSpacing = 150;
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
-        consensus.fPowAllowMinDifficultyBlocks = false; // Testnet 同样使用安全的难度调整
+        consensus.fPowAllowMinDifficultyBlocks = false; 
         consensus.fPowNoRetargeting = false;
         
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartTime = Consensus::BIP9Deployment::NEVER_ACTIVE;
 
-        // 创世块复用主网的，以确保所有参数都被正确初始化
+
         genesis = CreateGenesisBlock(1368374520, 147717, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256("000003167643c767d4e015a8bad0fb1054286acf23cfe3009083f9a9cd72dbc1"));
         assert(genesis.hashMerkleRoot == uint256("50e642574998223e81804fb878cc7caa818d6ed871f6e5bc990ed2ddc27797f4"));
         
-        // --- 修改Testnet专属的网络标识符以作区分 ---
+
         pchMessageStart[0] = 0x0b; // 使用比特币Testnet的经典魔法数字
         pchMessageStart[1] = 0x11;
         pchMessageStart[2] = 0x09;
@@ -177,7 +152,6 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
         bech32_hrp = "tb"; // Testnet bech32 前缀
 
-        // --- 其他参数可以保持和主网一致 ---
         nPruneAfterHeight = 1000;
         checkpointData = { {} };
         vSeeds.clear();
@@ -207,18 +181,15 @@ public:
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         
         // --- Regtest 特有的共识规则 ---
-        consensus.fPowAllowMinDifficultyBlocks = true; // 允许难度立即重置，方便测试
+        consensus.fPowAllowMinDifficultyBlocks = true; // 允许难度立即重置
         consensus.fPowNoRetargeting = true;            // 关闭难度调整
 
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
 
-        // 创世块复用主网的，但可以修改 nonce 以获得不同的创世哈希
         genesis = CreateGenesisBlock(1368374520, 1, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // Regtest 不需要 assert 创世块哈希，因为它每次都可能不同
 
-        // --- 修改Regtest专属的网络标识符 ---
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;
         pchMessageStart[2] = 0xb5;
@@ -240,16 +211,10 @@ public:
     }
 };
 
-/**
- * Testnet4
- * 为了安全，我们同样为其提供一个完整的、基于Testnet的克隆体。
- */
 class CDageTestNet4Params : public CDageTestNetParams {
 public:
     CDageTestNet4Params() {
         m_chain_type = ChainType::TESTNET4;
-        // TestNet4 可以继承自 TestNet，并在这里进行微调
-        // 例如，修改魔法数字或端口
         pchMessageStart[0] = 0x0c;
         pchMessageStart[1] = 0x12;
         pchMessageStart[2] = 0x0a;
@@ -258,17 +223,11 @@ public:
     }
 };
 
-
-/**
- * Signet
- * 为了安全，我们同样为其提供一个完整的、基于主网的克隆体。
- */
 class CDageSigNetParams : public CChainParams {
 public:
     CDageSigNetParams(const SigNetOptions& options) {
         m_chain_type = ChainType::SIGNET;
 
-        // === 同样从 CDageMainParams 完整复制过来的安全参数 ===
         consensus.nSubsidyHalvingInterval = 800000;
         consensus.BIP34Height = 1;
         consensus.BIP65Height = 1;
@@ -289,7 +248,6 @@ public:
         genesis = CreateGenesisBlock(1368374520, 147717, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         
-        // --- 修改Signet专属的网络标识符 ---
         pchMessageStart[0] = 0x0a;
         pchMessageStart[1] = 0x0b;
         pchMessageStart[2] = 0x0c;
@@ -309,34 +267,25 @@ public:
     }
 };
 
-
-// =================================================================
-// vvvvvvvvvvvvvvvvvv 全局函数定义 vvvvvvvvvvvvvvvvvvvvv
-// =================================================================
-
-// CChainParams 的静态成员函数，确保它们返回新创建的安全对象
 std::unique_ptr<const CChainParams> CChainParams::Main() { return std::make_unique<const CDageMainParams>(); }
 std::unique_ptr<const CChainParams> CChainParams::TestNet() { return std::make_unique<const CDageTestNetParams>(); }
 std::unique_ptr<const CChainParams> CChainParams::TestNet4() { return std::make_unique<const CDageTestNet4Params>(); }
 std::unique_ptr<const CChainParams> CChainParams::SigNet(const SigNetOptions& options) { return std::make_unique<const CDageSigNetParams>(options); }
 std::unique_ptr<const CChainParams> CChainParams::RegTest(const RegTestOptions& options) { return std::make_unique<const CDageRegTestParams>(options); }
 
-// 这两个函数是空的，因为我们的 Regtest/Signet 实现不依赖于额外的命令行参数
+
 void ReadSigNetArgs(const ArgsManager& args, CChainParams::SigNetOptions& options) {}
 void ReadRegTestArgs(const ArgsManager& args, CChainParams::RegTestOptions& options) {}
 
-// 返回快照高度，我们目前不支持，返回空
+
 std::vector<int> CChainParams::GetAvailableSnapshotHeights() const { return {}; }
 
-// 根据魔法数字获取网络类型，我们只支持主网
+
 std::optional<ChainType> GetNetworkForMagic(const MessageStartChars& magic) {
     if (magic == CChainParams::Main()->MessageStart()) {
         return ChainType::MAIN;
     }
-    // 为了健壮性，可以加上其他网络的检查
-    // if (magic == CChainParams::TestNet()->MessageStart()) {
-    //     return ChainType::TESTNET;
-    // }
+
     return std::nullopt;
 }
 
@@ -349,7 +298,6 @@ const CChainParams &Params() {
     return *globalChainParams;
 }
 
-// CChainParams 的工厂函数，根据链类型创建并返回相应的参数对象
 std::unique_ptr<const CChainParams> CreateChainParams(const ArgsManager& args, const ChainType chain) {
     switch (chain) {
     case ChainType::MAIN:
@@ -369,10 +317,10 @@ std::unique_ptr<const CChainParams> CreateChainParams(const ArgsManager& args, c
         return CChainParams::RegTest(opts);
     }
     }
-    assert(false); // 不应该执行到这里
+    assert(false); 
 }
 
-// 选择并激活全局链参数
+
 void SelectParams(const ChainType chain) {
     SelectBaseParams(chain);
     globalChainParams = CreateChainParams(gArgs, chain);

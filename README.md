@@ -1,4 +1,5 @@
-# nextBTC
+# nextBTC 已硬分叉至  
+**https://github.com/nextbtc2025/nextbtc103**
 
 [English Version](#english)
 
